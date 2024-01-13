@@ -1,20 +1,77 @@
 import React, { useRef, useState } from 'react'
 import Header from './Header'
 import { checkvalid } from '../utils/validate';
+import { createUserWithEmailAndPassword ,signInWithEmailAndPassword ,updateProfile} from "firebase/auth";
+import { auth } from '../utils/firebase';
+import { useNavigate } from 'react-router-dom';
+import {useDispatch} from "react-redux"
+import {addUser} from "../utils/userSlice"
 const Login = () => {
     const [isSignIn,setisSignIn]=useState(true);
     const [errorMsg,seterrorMsg]=useState("")
+  
     const email=useRef(null);
     const password=useRef(null);
     const username=useRef(null);
+    const dispatch=useDispatch();
     const toggleSignIn=()=>{
         setisSignIn(!isSignIn);
         seterrorMsg("")
+
     }
     const handleClick=()=>{
         
         const valid=checkvalid(email.current.value,password.current.value,!isSignIn?username.current.value:"",!isSignIn)
         seterrorMsg(valid);
+        if(valid) return;
+
+        if(!isSignIn){
+          //sign up form
+          createUserWithEmailAndPassword(auth,email.current.value,password.current.value)
+          .then((userCredential) => {
+            // Signed up 
+            const user = userCredential.user;
+            updateProfile(user, {
+              displayName:  username.current.value, photoURL: "https://example.com/jane-q-user/profile.jpg"
+            }).then(() => {
+              // Profile updated!
+          
+              const {uid,email,displayName} =user;
+              dispatch(addUser({uid:uid,email:email,displayName:displayName}))
+              // const {uid,email,displayName} = user;
+              // dispatch(addUser({uid:uid,email:email,displayName:displayName}))
+              // ...
+            }).catch((error) => {
+              // An error occurred
+              // ...
+            });
+            console.log(user)
+            // ...
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            seterrorMsg(errorCode)
+            // ..
+          });
+        }else{
+          //Sign in
+          signInWithEmailAndPassword(auth, email.current.value,password.current.value)
+              .then((userCredential) => {
+                // Signed in 
+                const user = userCredential.user;
+                console.log(user)
+                 
+                // ...
+              })
+              .catch((error) => {
+                const errorCode = error.code; 
+                const errorMessage = error.message;
+                seterrorMsg(errorCode);
+              });
+
+
+        }
     }
     
   return (
