@@ -4,7 +4,7 @@ import {  onAuthStateChanged } from "firebase/auth";
 import { useDispatch } from 'react-redux';
 import { auth } from '../utils/firebase';
 import {addUser,removeUser} from "../utils/userSlice"
-import { addNowPlayingMovies, addTrailerId } from '../utils/movies';
+import { addNowPlayingMovies, addTrailerId ,addPopularMovies,addTopRatedMovies,addUpcomingMovies} from '../utils/movies';
 
 const Header = () => {
   const dispatch=useDispatch()
@@ -23,6 +23,9 @@ const Header = () => {
         dispatch(removeUser())
         dispatch(addTrailerId(null))
         dispatch(addNowPlayingMovies(null))
+        dispatch(addUpcomingMovies(null))
+        dispatch(addTopRatedMovies(null))
+        dispatch(addPopularMovies(null))
         navigate("/")
         // ...
       }

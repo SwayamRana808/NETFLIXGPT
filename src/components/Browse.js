@@ -5,8 +5,14 @@ import { auth } from '../utils/firebase';
  import useNowPlayingMovies from '../hooks/useNowPlayingMovies';
 import Maincontainer from './Maincontainer';
 import Secondarycontainer from './Secondarycontainer';
+import useTopRatedMovies from '../hooks/useTopRatedMovies';
+import usePopularMovies from '../hooks/usePopularMovies';
+import useUpcomingMovies from '../hooks/useUpcomingMovies';
 const Browse = () => {
   useNowPlayingMovies()
+  useTopRatedMovies()
+  usePopularMovies()
+  useUpcomingMovies()
   const handleSignout=()=>{
   
     signOut(auth).then(() => {
@@ -27,9 +33,9 @@ const Browse = () => {
     
     <button onClick={handleSignout} type="button" className="m-[10px] sm:m-[40px] text-white right-[10px] absolute  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5   dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Sign Out</button>
     </div>
-    <div className='relative top-0'>
+    <div className='relative'>
     <Maincontainer/>
-    <Secondarycontainer/>
+    
     </div>
     </div>
   )
